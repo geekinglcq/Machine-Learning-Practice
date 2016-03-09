@@ -6,6 +6,7 @@ public:
 	sample();
 	sample(int n, float* value, string* name);
 	void set(int n, float* value, string* name);
+	float getFeature(int no);
 	void printInfo();
 private:
 	string featureName[100];

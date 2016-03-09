@@ -17,6 +17,7 @@ public :
 	static sample dataSet[100];
 	static int label[100];
 	static int amount;
+	static int featureNum;
 private:
 	int id;
 	int content;

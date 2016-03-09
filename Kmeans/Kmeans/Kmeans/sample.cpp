@@ -27,3 +27,7 @@ void sample::set(int n, float value[], string name[]) {
 		featureName[i] = name[i];
 	}
 }
+
+float sample::getFeature(int num) {
+	return featureValue[num];
+}

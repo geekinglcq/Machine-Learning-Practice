@@ -32,4 +32,36 @@ void cluster::calQuantity() {
 	for (int i = 0; i < amount; i++) {
 		if (label[i] == id)count++;
 	}
+	quantity = count;
+}
+
+void cluster::calCenter() {
+	float temp[100] = {0};
+	for (int i = 0; i < amount; i++) {
+		if (label[i] == id)
+			for (int j = 0; j < featureNum; j++) {
+				temp[j] = temp[j] + dataSet[i].getFeature(j);
+			}
+	}	
+	for (int j = 0; j < featureNum; j++) {
+		center[j] = temp[j] / featureNum;
+	}
+}
+
+void cluster::addSample(int i) {
+	label[i] = id;	
+	int t = quantity + 1;
+	for (int j = 0; j < featureNum; j++) {
+		center[j] = (center[j] * quantity + dataSet[i].getFeature(j))/t;
+	}	
+	quantity++;
+}
+
+void cluster::removeSample(int i) {
+	label[i] = -1;
+	int t = quantity;
+	quantity--;
+	for (int j = 0; j < featureNum; j++) {
+		center[j] = (center[j] * t - dataSet[i].getFeature(j)) / quantity;
+	}
 }
