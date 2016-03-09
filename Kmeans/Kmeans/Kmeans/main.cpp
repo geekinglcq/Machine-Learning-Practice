@@ -10,3 +10,7 @@ int main() {
 	A.printInfo();
 	return 0;
 }
+
+void initData() {
+
+}
