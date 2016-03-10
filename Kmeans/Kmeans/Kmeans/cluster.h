@@ -14,7 +14,8 @@ public :
 	void addSample(int i);
 	void removeSample(int i);
 
-	static sample dataSet[100];
+
+	static sample dataSet[100]; //All clusters share the same data set.
 	static int label[100];
 	static int amount;
 	static int featureNum;
