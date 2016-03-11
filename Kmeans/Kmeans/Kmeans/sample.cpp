@@ -21,12 +21,14 @@ void sample::printInfo() {
 		cout << featureName[i] << " : " << featureValue[i] << endl;
 	}
 }
-void sample::set(int n, float value[]) {
-	featureNumber = n;
-	for (int i = 0; i < n; i++) {
+void sample::set(float value[]) {
+	
+	for (int i = 0; i < featureNumber; i++) {
 		featureValue[i] = value[i];		
 	}
 }
+
+
 
 float sample::getFeature(int num) {
 	return featureValue[num];
