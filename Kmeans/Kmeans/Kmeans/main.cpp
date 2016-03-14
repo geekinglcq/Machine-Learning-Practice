@@ -2,6 +2,8 @@
 #include<fstream>
 #include<string>
 #include<sstream>
+#include<stdlib.h>
+#include<time.h>
 #include"sample.h"
 #include"cluster.h"
 using namespace std;
@@ -13,7 +15,8 @@ sample cluster::dataSet[100]; //All clusters share the same data set.
 int cluster::label[100];
 int cluster::amount;
 int cluster::featureNum;
-
+int clusterNum;
+cluster *clu;
 //Convert string to num
 template <class Type>
 Type stringToNum(const string& str)
@@ -33,6 +36,7 @@ void initData(int featureNum, int sampleNum, string fileName) {
 		return;
 	}
 	sample::featureNumber = featureNum;
+	cluster::amount = sampleNum;
 	for (i = 1; i <= sampleNum; i++) {
 		string t;
 		char c;
@@ -50,11 +54,22 @@ void initData(int featureNum, int sampleNum, string fileName) {
 	}
 }
 
+void randomDistribute() {
+	int i, j;
+	srand((unsigned)time(NULL));
+	for (int i = 1; i <= cluster::amount; i++) {
+		int t = (rand() % (clusterNum  + 1)) + 0;
+		clu[t].addSample(i);
+	}
+}
 int main() {
 	int k = 2;
 	string na[2] = { "faef","dfa" };
 	float s[2] = { 1,2 };
 	initData(3, 3,"a.txt");
+	clu = new cluster[clusterNum];
+	
+	clusterNum = 3;
 	return 0;
 }
 
