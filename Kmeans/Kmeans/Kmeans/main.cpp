@@ -1,9 +1,11 @@
 #include<iostream>
 #include<fstream>
 #include<string>
+#include<iomanip>
 #include<sstream>
 #include<stdlib.h>
 #include<time.h>
+#include<math.h>
 #include"sample.h"
 #include"cluster.h"
 using namespace std;
@@ -15,6 +17,7 @@ sample cluster::dataSet[100]; //All clusters share the same data set.
 int cluster::label[100];
 int cluster::amount;
 int cluster::featureNum;
+int cluster::clusterNum;
 int clusterNum;
 cluster *clu;
 //Convert string to num
@@ -27,13 +30,16 @@ Type stringToNum(const string& str)
 	return num;
 }
 
-void initData(int featureNum, int sampleNum, string fileName) {
-	int i, j, k;
+void initData(int featureNum, int sampleNum, string fileName,bool header) {
+	int i,j;
 	ifstream in;
 	in.open(fileName, ios::in);
 	if (!in.is_open()) {
-		cout << "No such file." << endl;
-		return;
+		cout << "No such file.System will use sample file." << endl;
+		in.open("sample.txt", ios::in);
+	}
+	if (header) {
+		for (i = 0; i < featureNum; i++) cin >> sample::featureName[i];
 	}
 	sample::featureNumber = featureNum;
 	cluster::amount = sampleNum;
@@ -52,24 +58,76 @@ void initData(int featureNum, int sampleNum, string fileName) {
 		}
 		cluster::dataSet[i].set(tempData);
 	}
+	in.close();
 }
 
 void randomDistribute() {
-	int i, j;
+	int i;
 	srand((unsigned)time(NULL));
+	for (i = 1; i <= cluster::amount; i++) {
+		int t = (rand() % (clusterNum ));
+		clu[t].addSample(i,true);
+	}
+}
+
+void iteration(cluster* clu) {
 	for (int i = 1; i <= cluster::amount; i++) {
-		int t = (rand() % (clusterNum  + 1)) + 0;
-		clu[t].addSample(i);
+		int flag;
+		float min = 2 << 18;
+		for (int j = 0; j < cluster::clusterNum; j++) {
+			float temp = 0;
+			for (int t = 0; t < sample::featureNumber; t++) {
+				temp = temp + pow((cluster::dataSet[i].getFeature(t) - clu[j].getCenter(t)),2);
+			}
+			temp = pow(temp, 0.5);
+			if (temp < min) {
+				min = temp;
+				flag = j;
+			}
+		}
+		clu[cluster::label[i]].removeSample(i,false);
+		clu[flag].addSample(i,false);
+	}
+	for (int i = 0; i < cluster::clusterNum; i++) {
+		clu[i].calQuantity();
+		clu[i].calCenter();
 	}
 }
 int main() {
+	//cout << "Please enter the name of datafile." << endl;
+	//string file;
+	//cin >> file;
+	//cout << endl << "Please enter the amount of observations." << endl;
+	//int sampAmount;
+	//cin >> sampAmount;
+	//cout << endl << "Please enter the number of features." << endl;
+	//int countFeature;
+	//cin >> countFeature;
+	//cout << endl << "How many time do you want to iterate" << endl;
+
 	int k = 2;
 	string na[2] = { "faef","dfa" };
 	float s[2] = { 1,2 };
-	initData(3, 3,"a.txt");
+	initData(3, 7,"a.txt",false);
 	clu = new cluster[clusterNum];
+	clusterNum = 3; 
+	cluster::clusterNum = 3;
+	for (int i = 0; i < clusterNum; i++) clu[i].setId(i);
+	randomDistribute();
 	
-	clusterNum = 3;
+	cout << endl << "Init:" << "SampleID : ClassID";
+	for (int ii= 1;ii <= cluster::amount; ii++) {
+		cout << setw(6) << ii << ":" << setw(6) << cluster::label[ii] << " | ";
+	}
+	
+	for (int i = 0; i < 2; i++) {
+		cout << endl << "##################################################################" << endl;
+		cout << "#   Iteration "<<i+1<<":" << endl;
+		iteration(clu);
+		for (int i = 1; i <= cluster::amount; i++) cout << setw(6) << i << ":" << setw(6) << cluster::label[i] << " | ";
+		cout << endl;
+	}
+	int i = 9;
 	return 0;
 }
 

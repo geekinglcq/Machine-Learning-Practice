@@ -20,6 +20,9 @@ int cluster::getId() {
 }
 
 void cluster::setId(int i) {
+	content = 0;
+	quantity = 0;
+	memset(center, 0, 100);
 	id = i;
 }
 
@@ -27,6 +30,9 @@ int cluster::getQuantity() {
 	return quantity;
 }
 
+float cluster::getCenter(int i) {
+	return center[i];
+}
 void cluster::calQuantity() {
 	int count=0;
 	for (int i = 0; i < amount; i++) {
@@ -48,20 +54,24 @@ void cluster::calCenter() {
 	}
 }
 
-void cluster::addSample(int i) {
+void cluster::addSample(int i, bool changeCenter) {
 	label[i] = id;	
 	int t = quantity + 1;
-	for (int j = 0; j < featureNum; j++) {
-		center[j] = (center[j] * quantity + dataSet[i].getFeature(j))/t;
-	}	
+	if (changeCenter) {
+		for (int j = 0; j < featureNum; j++) {
+			center[j] = (center[j] * quantity + dataSet[i].getFeature(j)) / t;
+		}
+	}
 	quantity++;
 }
 
-void cluster::removeSample(int i) {
+void cluster::removeSample(int i,bool changeCenter) {
 	label[i] = -1;
 	int t = quantity;
 	quantity--;
-	for (int j = 0; j < featureNum; j++) {
-		center[j] = (center[j] * t - dataSet[i].getFeature(j)) / quantity;
+	if (changeCenter) {
+		for (int j = 0; j < featureNum; j++) {
+			center[j] = (center[j] * t - dataSet[i].getFeature(j)) / quantity;
+		}
 	}
 }

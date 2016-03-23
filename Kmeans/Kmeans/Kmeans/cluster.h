@@ -11,14 +11,16 @@ public :
 	void setId(int i);
 	void calQuantity();
 	void calCenter();
-	void addSample(int i);
-	void removeSample(int i);
+	float getCenter(int i);
+	void addSample(int i,bool changeCenter);
+	void removeSample(int i,bool changeCenter);
 
 
 	static sample dataSet[100]; //All clusters share the same data set.
 	static int label[100];
 	static int amount;
 	static int featureNum;
+	static int clusterNum;
 private:
 	int id;
 	int content;
