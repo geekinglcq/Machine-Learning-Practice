@@ -42,6 +42,7 @@ void initData(int featureNum, int sampleNum, string fileName,bool header) {
 		for (i = 0; i < featureNum; i++) cin >> sample::featureName[i];
 	}
 	sample::featureNumber = featureNum;
+	cluster::featureNum = featureNum;
 	cluster::amount = sampleNum;
 	for (i = 1; i <= sampleNum; i++) {
 		string t;
@@ -67,6 +68,10 @@ void randomDistribute() {
 	for (i = 1; i <= cluster::amount; i++) {
 		int t = (rand() % (clusterNum ));
 		clu[t].addSample(i,true);
+	}
+	for ( i = 0; i < cluster::clusterNum; i++) {
+		clu[i].calQuantity();
+		clu[i].calCenter();
 	}
 }
 
@@ -94,21 +99,22 @@ void iteration(cluster* clu) {
 	}
 }
 int main() {
-	//cout << "Please enter the name of datafile." << endl;
-	//string file;
-	//cin >> file;
-	//cout << endl << "Please enter the amount of observations." << endl;
-	//int sampAmount;
-	//cin >> sampAmount;
-	//cout << endl << "Please enter the number of features." << endl;
-	//int countFeature;
-	//cin >> countFeature;
-	//cout << endl << "How many time do you want to iterate" << endl;
-
+	cout << "Please enter the name of datafile." << endl;
+	string file;
+	cin >> file;
+	cout << endl << "Please enter the amount of observations." << endl;
+	int sampAmount;
+	cin >> sampAmount;
+	cout << endl << "Please enter the number of features." << endl;
+	int countFeature;
+	cin >> countFeature;
+	cout << endl << "How many time do you want to iterate" << endl;
+	int it = 0;
+	cin >> it;
 	int k = 2;
-	string na[2] = { "faef","dfa" };
-	float s[2] = { 1,2 };
-	initData(3, 7,"a.txt",false);
+	
+	
+	initData(countFeature, sampAmount,file,false);
 	clu = new cluster[clusterNum];
 	clusterNum = 3; 
 	cluster::clusterNum = 3;
@@ -116,18 +122,31 @@ int main() {
 	randomDistribute();
 	
 	cout << endl << "Init:" << "SampleID : ClassID";
+	cout << endl;
 	for (int ii= 1;ii <= cluster::amount; ii++) {
 		cout << setw(6) << ii << ":" << setw(6) << cluster::label[ii] << " | ";
 	}
-	
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < cluster::clusterNum; i++) {
+		cout << endl << "Class:" << i << endl;
+		cout << "Center:	";
+		for (int j = 0; j < cluster::featureNum; j++) cout << clu[i].getCenter(j) << "		";
+	}
+
+	for (int i = 0; i < it; i++) {
 		cout << endl << "##################################################################" << endl;
 		cout << "#   Iteration "<<i+1<<":" << endl;
 		iteration(clu);
+		for (int i = 0; i < cluster::clusterNum; i++) {
+			cout <<endl<< "Class:" << i << endl;
+			cout << "Center:	";
+			for (int j = 0; j < cluster::featureNum; j++) cout << clu[i].getCenter(j) << "		";
+		}
+		cout << endl;
 		for (int i = 1; i <= cluster::amount; i++) cout << setw(6) << i << ":" << setw(6) << cluster::label[i] << " | ";
 		cout << endl;
 	}
-	int i = 9;
+	cout << endl << "Press enter to exit.";
+	getchar();
 	return 0;
 }
 
