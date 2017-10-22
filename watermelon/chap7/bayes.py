@@ -62,6 +62,9 @@ def infer(model, labels, sample):
     return res
 
 def main():
+    """
+    Here we simplify the question by ignoring the continuous features. 
+    """
     data = loadData(path)
     model, labels = trainBayes(data)
     result = infer(model, labels, sample)
