@@ -10,6 +10,7 @@ iris_path = './data/iris.data'
 adult_train_path = './data/adult.data'
 adult_test_path = './data/adult.test'
 drive_path = './data/Sensorless_drive_diagnosis.txt'
+
 def loadData(dataName='Iris'):
     if dataName not in ['Iris', 'Adult', 'Drive']:
         print("Data name must be one of 'Iris', 'Adult', 'Drive' ")
