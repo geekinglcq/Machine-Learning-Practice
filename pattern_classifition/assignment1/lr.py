@@ -16,10 +16,8 @@ def tuneParameter(X, y, scoring):
     }
     grid = GridSearchCV(LogisticRegression(), param_grid=parameters, \
     cv=3, scoring=scoring, refit=scoring[0], n_jobs=12)
-    print('a')
     grid.fit(X, y)
-    print('b')
-    columns = ['param_' + i for i in penalty] + ['mean_test_score' + i, 'mean_train_score'+ i for i in scoring]
+    columns = ['param_' + i for i in parameters] + ['mean_test_' + i, 'mean_train_'+ i for i in scoring]
     return grid.best_estimator_, pd.DataFrame(grid.cv_results_)[columns]
 
 
