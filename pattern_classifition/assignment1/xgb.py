@@ -4,7 +4,7 @@ import pandas as pd
 from utility import loadData
 from sklearn import cross_validation, metrics
 from sklearn.datasets import load_svmlight_file
-from sklearn.grid_search import GridSearchCV 
+from sklearn.grid_search import GridSearchCV
 
 
 def modelfit(alg, X, y,useTrainCV=True, cv_folds=5, early_stopping_rounds=50):
@@ -28,7 +28,7 @@ def modelfit(alg, X, y,useTrainCV=True, cv_folds=5, early_stopping_rounds=50):
     print("AUC Score (Train): %f" % metrics.roc_auc_score(y, dtrain_predprob))
 
 def tuneParameter(X, y, scoring, parameters):
-    grid = GridSearchCV(XGBClassifier(nthread=10), param_grid=parameters, \
+    grid = GridSearchCV(XGBClassifier(nthread=4), param_grid=parameters, \
     cv=3, scoring=scoring[0], refit=scoring[0], n_jobs=12)
     grid.fit(X, y)
     columns = ['param_' + i for i in parameters] + [ 'mean_train_'+ i for i in scoring] + ['mean_test_' + i for i in scoring]
@@ -36,7 +36,7 @@ def tuneParameter(X, y, scoring, parameters):
 
 
 def format(para):
-    for k, v in para:
+    for k, v in para.items():
         if type(v) != list:
             para[k] = [v]
     return para
@@ -50,7 +50,7 @@ def main(dataset='Iris'):
     },{
         'max_depth': [3 ,5 ,7, 9],
         'min_child_weight': [1, 3 ,5],
-      
+
     }]
     if dataset == 'Iris':
         # Iris
@@ -63,11 +63,11 @@ def main(dataset='Iris'):
         para.update(parameters[2])
         model, res3 = tuneParameter(X, y, ['accuracy'], para)
         return model, [res, res2, res3]
-        
+
     else:
     # Drive
         if dataset == 'Drive':
-            X, y = loadData('Drive')  
+            X, y = loadData('Drive')
         else:
             X, y = loadData('Adult')
         model,res =tuneParameter(X, y, ['accuracy'], parameters[0])

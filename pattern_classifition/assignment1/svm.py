@@ -25,12 +25,12 @@ def main(dataset='Iris'):
         # Iris
         X, y = loadData('Iris')
         model, res = tuneParameter(X, y, ['accuracy'])
-        return res
         print(res)
+        return model, res
     else:
     # Drive
-        X, y = loadData('Drive')  
+        X, y = loadData('Drive')
         model, res = tuneParameter(X, y, ['f1_micro', 'accuracy', 'f1_macro' ])
         print(res)
-    
-    
+
+
