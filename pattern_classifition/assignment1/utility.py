@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 import json
 import codecs
 
 import numpy as numpy
-import pandas as pd 
+import pandas as pd
 
 iris_path = './data/iris.data'
 adult_train_path = './data/adult.data'
@@ -20,23 +20,28 @@ def loadData(dataName='Iris'):
         data['label'] = pd.Categorical(data['label']).codes
         X = data[data.columns.drop('label')]
         y = data['label']
-        return X, y 
+        return X, y
     if dataName == 'Adult':
-        cateFeature = ['work', 'education', 'marriage', 'occupation', 'relation', 'race', 'sex', 'native-country', 'label']
-        train = pd.read_csv(adult_train_path, names=['age', 'work','fnlwgt','education','edu_num','marriage','occupation'\
+        cateFeature = ['work', 'education', 'marriage', 'occupation', 'relationship', 'race', 'sex', 'native-country', 'label']
+        train = pd.read_csv(adult_train_path, names=['age', 'work','fnlwgt','education','edu_num','marriage','occupation',\
         'relationship','race','sex','capital-gain','capital-loss','hours-per-week','native-country','label'])
-        test = pd.read_csv(adult_test_path, names=['age', 'work','fnlwgt','education','edu_num','marriage','occupation'\
+        test = pd.read_csv(adult_test_path, names=['age', 'work','fnlwgt','education','edu_num','marriage','occupation',\
         'relationship','race','sex','capital-gain','capital-loss','hours-per-week','native-country','label'])
         data = pd.concat([train, test])
+        data.loc[data['label'] == ' <=50K.','label']= ' <=50K'
+        data.loc[data['label'] == ' >50K.','label']= ' >50K'
         for i in cateFeature:
             data[i] = pd.Categorical(data[i]).codes
-        X = data[data.coulmns.drip('label')]
-        y = data[label]
+        X = data[data.columns.drop('label')]
+        y = data['label']
+        for i in X.columns:
+            if i != 'label':
+                X[[i]] = X[[i]].astype(int)
         return X, y
     if dataName == 'Drive':
         data = pd.read_csv(drive_path, sep=' ', names=['f' + str(i) for i in range(48)] + ['label'])
         data['label'] = pd.Categorical(data['label']).codes
         X = data[data.columns.drop('label')]
         y = data['label']
-        return X, y 
-        
+        return X, y
+

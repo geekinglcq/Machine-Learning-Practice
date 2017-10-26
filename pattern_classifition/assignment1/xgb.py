@@ -24,12 +24,12 @@ def modelfit(alg, X, y,useTrainCV=True, cv_folds=5, early_stopping_rounds=50):
 
     #Print model report:
     print("\nModel Report")
-    print("Accuracy : %.4g" % metrics.accuracy_score(y, dtrain_predictions))
+    print("precision : %.4g" % metrics.accuracy_score(y, dtrain_predictions))
     print("AUC Score (Train): %f" % metrics.roc_auc_score(y, dtrain_predprob))
 
 def tuneParameter(X, y, scoring, parameters):
     grid = GridSearchCV(XGBClassifier(), param_grid=parameters, \
-    cv=3, scoring=scoring[0], refit=scoring[0], n_jobs=12)
+    cv=3, scoring=scoring[0], refit=scoring[0], n_jobs=20)
     grid.fit(X, y)
     columns = ['param_' + i for i in parameters] + [ 'mean_train_'+ i for i in scoring] + ['mean_test_' + i for i in scoring]
     return grid.best_estimator_, grid.grid_scores_
@@ -55,15 +55,15 @@ def main(dataset='Iris'):
     if dataset == 'Iris':
         # Iris
         X, y = loadData('Iris')
-        model,res =tuneParameter(X, y, ['accuracy'], parameters[0])
+        model,res =tuneParameter(X, y, ['precision'], parameters[0])
         para = format(model.get_params())
         para.update(parameters[1])
         print('a')
-        model, res2 = tuneParameter(X, y, ['accuracy'], para)
+        model, res2 = tuneParameter(X, y, ['precision'], para)
         para = format(model.get_params())
         print('b')
         para.update(parameters[2])
-        model, res3 = tuneParameter(X, y, ['accuracy'], para)
+        model, res3 = tuneParameter(X, y, ['precision'], para)
         return model, [res, res2, res3]
 
     else:
@@ -72,11 +72,11 @@ def main(dataset='Iris'):
             X, y = loadData('Drive')
         else:
             X, y = loadData('Adult')
-        model,res =tuneParameter(X, y, ['accuracy'], parameters[0])
+        model,res =tuneParameter(X, y, ['precision'], parameters[0])
         para = format(model.get_params())
         para.update(parameters[1])
-        model, res2 = tuneParameter(X, y, ['f1_macro'], para)
+        model, res2 = tuneParameter(X, y, ['precision'], para)
         para = format(model.get_params())
         para.update(parameters[2])
-        model, res3 = tuneParameter(X, y, ['f1_macro'], para)
+        model, res3 = tuneParameter(X, y, ['precision'], para)
         return model, [res, res2, res3]
