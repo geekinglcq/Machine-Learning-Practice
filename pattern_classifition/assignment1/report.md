@@ -15,10 +15,14 @@
 			* [LR](#lr)
 			* [SVM](#svm)
 			* [GBDT](#gbdt-1)
+			* [结果比对](#结果比对)
 		* [Adult](#adult)
+			* [GBDT](#gbdt-2)
 		* [Drive](#drive)
 			* [LR](#lr-1)
 			* [SVM](#svm-1)
+			* [GBDT](#gbdt-3)
+			* [实验对比](#实验对比)
 
 <!-- /code_chunk_output -->
 
@@ -27,7 +31,7 @@
 本次实验选取了三份数据集分别是：　　
 + [**Iris Data**](http://archive.ics.uci.edu/ml/datasets/Iris)   该数据集包含了三类鸢尾花的特征，每类有50条数据，特征为４维，分别是萼片和花瓣的宽度以及长度。　　
 + [**Adult**](http://archive.ics.uci.edu/ml/datasets/Adult) 该数据集共有48842条数据，特征有14维，类别有两类——收入是否超过５万美元一年，分布大约是24%(超过５万美元)和76(不超过)。　　
-+ [**Sensorless Drive Diagnosis**](http://archive.ics.uci.edu/ml/datasets/Dataset+for+Sensorless+Drive+Diagnosis) 该数据集有58509条数据，共有11类，特征为49维。  
++ [**Sensorless Drive Diagnosis**](http://archive.ics.uci.edu/ml/datasets/Dataset+for+Sensorless+Drive+Diagnosis) 该数据集有58509条数据，共有11类，特征为49维。数据内容为汽车内各类传感器的数据，标签为汽车的故障状态。    
 
 ## 分类器　　
 本次实验，我选取了３个分类器。分别是：　　　
@@ -110,9 +114,24 @@ $$\text{obj}^{(t)} = \sum^T_{j=1} [G_jw_j + \frac{1}{2} (H_j+\lambda) w_j^2] +\g
 
 #### GBDT  
 这里由于xgboost的超参数过多，也就不将所有实验结果贴出来了。  
+总的来说，在该数据集上xgboost的超参数对结果影响并不大，也就两到三个百分点左右。在测试集上，xgboost能够取得的最好成绩是0.97333。  
+
+#### 结果比对  
+下面选择几类分类器在测试集上的最好成绩做比对。  
+|LR|SVM|GBDT|
+|--|--|--|
+|0.966667|0.986631|0.973333|
 
 ### Adult  
 由于该数据集含有大量难以序化的离散变量，所以该数据集仅使用xgboost来进行实验。  
+#### GBDT  
+这里我们使用对结果进行观察，可以看到：  
+`gamma`对结果几乎没有影响，`subsample`有细微的影响，当数值略小于1时能取得较好的成绩。  
+`min_child_weight`和`max_depth`的适度增长对结果都有提升，这是因为该数据集的特征较多，会需要较大的树深度。  
+最后最好的结果是：  
+`accuracy`:  0.86448  
+`recall`: 0.65107
+`precision`: 0.79166
 
 ### Drive  
 该数据集使用交叉验证。这里我们因为涉及到多酚类问题，因此我们的指标除了精度（accuracy）外还引用了f1-score，由于是多分类，因此不能之间使用recall和precision计算得到的f1-score,这里我们使用了`f1_micro` 和`f1_macro`这两个指标。  
@@ -166,3 +185,18 @@ $$\text{obj}^{(t)} = \sum^T_{j=1} [G_jw_j + \frac{1}{2} (H_j+\lambda) w_j^2] +\g
 | 10      | 0.1         | 0.910313       | 0.246573      | 0.910305       | 0.246389      |
 | 10      | 0.5         | 0.997641       | 0.121175      | 0.997641       | 0.129570      |
 | 10      | 0.01        | 0.644713       | 0.348144      | 0.645000       | 0.363072      |
+
+#### GBDT  
+这里，`gamma`， `reg_alpha`对GBDT的影响不大；    
+
+`max_depth`, `min_child_weight`的影响也不大，可能是因为特征空间较小，无需树的结构很深；  
+
+`subsample`的变化会造成结果的显著变化，当该值小于0.5时，效果会非常差，这也是因为该数据集中的数据较为均衡，不需要欠采样有关。  
+GBDT在该数据集上的最好表现为0.74877。  
+
+#### 实验对比  
+下面选择几类分类器在测试集上的最好成绩做比对。  
+|LR|SVM|GBDT|
+|--|--|--|
+|0.603685|0.36307|0.74877|  
+这里可以看出，GBDT几乎是完胜其他两个分类器。  
