@@ -28,7 +28,7 @@ def modelfit(alg, X, y,useTrainCV=True, cv_folds=5, early_stopping_rounds=50):
     print("AUC Score (Train): %f" % metrics.roc_auc_score(y, dtrain_predprob))
 
 def tuneParameter(X, y, scoring, parameters):
-    grid = GridSearchCV(XGBClassifier(nthread=4), param_grid=parameters, \
+    grid = GridSearchCV(XGBClassifier(), param_grid=parameters, \
     cv=3, scoring=scoring[0], refit=scoring[0], n_jobs=12)
     grid.fit(X, y)
     columns = ['param_' + i for i in parameters] + [ 'mean_train_'+ i for i in scoring] + ['mean_test_' + i for i in scoring]
@@ -58,8 +58,10 @@ def main(dataset='Iris'):
         model,res =tuneParameter(X, y, ['accuracy'], parameters[0])
         para = format(model.get_params())
         para.update(parameters[1])
+        print('a')
         model, res2 = tuneParameter(X, y, ['accuracy'], para)
         para = format(model.get_params())
+        print('b')
         para.update(parameters[2])
         model, res3 = tuneParameter(X, y, ['accuracy'], para)
         return model, [res, res2, res3]
