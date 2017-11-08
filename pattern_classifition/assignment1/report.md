@@ -29,9 +29,11 @@
 
 ## 实验数据集　　
 本次实验选取了三份数据集分别是：　　
-+ [**Iris Data**](http://archive.ics.uci.edu/ml/datasets/Iris)   该数据集包含了三类鸢尾花的特征，每类有50条数据，特征为４维，分别是萼片和花瓣的宽度以及长度。　　
-+ [**Adult**](http://archive.ics.uci.edu/ml/datasets/Adult) 该数据集共有48842条数据，特征有14维，类别有两类——收入是否超过５万美元一年，分布大约是24%(超过５万美元)和76(不超过)。　　
-+ [**Sensorless Drive Diagnosis**](http://archive.ics.uci.edu/ml/datasets/Dataset+for+Sensorless+Drive+Diagnosis) 该数据集有58509条数据，共有11类，特征为49维。数据内容为汽车内各类传感器的数据，标签为汽车的故障状态。    
++ [**Iris Data**](http://archive.ics.uci.edu/ml/datasets/Iris)   该数据集包含了三类鸢尾花的特征，每类有50条数据，特征为４维，分别是萼片和花瓣的宽度以及长度。[点此下载](http://archive.ics.uci.edu/ml/datasets/Iris)　　
++ [**Adult**](http://archive.ics.uci.edu/ml/datasets/Adult) 该数据集共有48842条数据，特征有14维，类别有两类——收入是否超过５万美元一年，分布大约是24%(超过５万美元)和76(不超过)。[点此下载](http://archive.ics.uci.edu/ml/datasets/Adult)　　
++ [**Sensorless Drive Diagnosis**](http://archive.ics.uci.edu/ml/datasets/Dataset+for+Sensorless+Drive+Diagnosis) 该数据集有58509条数据，共有11类，特征为49维。数据内容为汽车内各类传感器的数据，标签为汽车的故障状态。[点此下载](http://archive.ics.uci.edu/ml/datasets/Dataset+for+Sensorless+Drive+Diagnosis)     
+  
+实验的代码可以在[这里](https://github.com/geekinglcq/Machine-Learning-Practice/tree/master/pattern_classifition/assignment1)找到。  
 
 ## 分类器　　
 本次实验，我选取了３个分类器。分别是：　　　
