@@ -14,7 +14,7 @@ class Node():
         self.father = father
         self.sons = []  
 
-    def split(self, data, mode='Gain'):  
+    def split(self, data, val_data=None, prune='no', mode='Gain'):  
         """
         If split successfully, return the new nodes,
         else return None (label self as leaf).
@@ -40,6 +40,13 @@ class Node():
         # suitation 3  
     
         prop = select_best_prop(data, self.dataID, self.props, mode=mode)
+
+        # pre-pruning 
+        if prune == 'pre':
+            if pre_pruning(data, self.dataID, val_data, self.props[prop]):
+                self.label = data.loc[self.dataID]['label'].value_counts().argmax()
+                return None
+
         left_props = deepcopy(self.props)
         del left_props[prop]
         self.split_prop = {'name':prop, 'type':self.props[prop]['type'], 'values':self.props[prop]['values']}
@@ -65,6 +72,7 @@ class Node():
             sample_value = sample[self.split_prop['name']]
             for i, v in enumerate(self.split_prop['values']):
                 if v == sample_value:
+                    
                     return self.sons[i]
 
 

@@ -1,6 +1,8 @@
 #-*- coding:utf-8  -*-
 
 import math
+
+import numpy as np
 from collections import Counter
 
 def check_data_label(data, dataID):
@@ -42,6 +44,8 @@ def select_best_prop(data, dataID, props, mode='Gain'):
         return infogain_selector(data, dataID, props)
     if mode == 'Gini':
         return ginindex_selector(data, dataID, props)
+    if mode == 'Lr':
+        return logit_selector(data, dataID, props)
 
     return list(props)[0]
 
@@ -73,10 +77,20 @@ def infogain_selector(data, dataID, props):
             candinate = prop
     return candinate
 
-    pass 
 def ginindex_selector(data, dataID, props):
-    pass
+    subdata = data.loc[dataID]
+    minginindex = 1024
+    
+    for prop in props.keys():
+        ginindex = cal_ginindex(subdata, props[prop])
+        
+        if ginindex < minginindex:
+            minginindex = ginindex
+            candinate = prop
+    return candinate
 
+def logit_selector(data, dataID, props):
+    subdata = data.loc[dataID]
 
 def cal_gain(data, prop):
     """
@@ -102,3 +116,68 @@ def cal_entropy(data):
         p = len(data[data['label'] == l]) / total
         ent -= p * math.log2(p)
     return ent 
+
+def cal_ginindex(data, prop):
+    """
+    Calculate the gini index 
+    """
+    ginindex = 0
+    total_count = len(data)
+    for v in prop['values']:
+        subdata = data[data[prop['name']] == v]
+        count = len(subdata)
+        ginindex += count/total_count * cal_gini(subdata)
+    
+    return ginindex
+
+def cal_gini(data):
+    """
+    Calculate the gini
+    """
+    gini = 1
+    total = len(data)
+    for l in data['label'].unique():
+        p = len(data[data['label'] == l]) / total
+        gini -= p*p 
+    return gini 
+
+def pre_pruning(data, dataID, val_data, prop):
+    subdata = data.loc[dataID]
+    total_count = len(val_data)
+    label = subdata['label'].value_counts().argmax()
+    acc = len(val_data[val_data['label']==label]) / total_count
+    correct_count = 0 
+    
+    for v in prop['values']:
+        temp = subdata[subdata[prop['name']]==v]
+        temp_val = val_data[val_data[prop['name']]==v]
+        if len(temp) > 0:
+            label = temp['label'].value_counts().argmax()
+        correct_count += len(temp[temp['label'] == label])
+    new_acc = correct_count / total_count  
+    if new_acc >= acc:
+        return False
+    else:
+        return True
+
+def post_pruning(node, data, val_data):
+    if node.split_prop == None:
+        return False
+
+    subdata = data.loc[node.dataID]
+    total_count = len(val_data)
+    label = subdata['label'].value_counts().argmax()
+    acc = len(val_data[val_data['label']==label]) / total_count
+    correct_count = 0 
+    
+    for v in node.split_prop['values']:
+        temp = subdata[subdata[node.split_prop['name']]==v]
+        temp_val = val_data[val_data[node.split_prop['name']]==v]
+        if len(temp) > 0:
+            label = temp['label'].value_counts().argmax()
+        correct_count += len(temp[temp['label'] == label])
+    new_acc = correct_count / total_count  
+    if new_acc >= acc:
+        return False
+    else:
+        return True
